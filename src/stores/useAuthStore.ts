@@ -1,49 +1,49 @@
-import { loginPassword, loginUserName } from "@/data/loginData";
+import { loginPassword, loginUserName, loginFullName } from "@/data/loginData";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type User = {
   userName: string;
   fullName: string;
-  password: string;
 };
 
 interface AuthStore {
-  user: User;
-  login: (credentials: User) => void;
+  user: User | null;
+  login: (credentials: {
+    userName: string;
+    password: string;
+  }) => boolean;
   logout: () => void;
-  isAuthenticated: () => boolean;
 }
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set, get) => ({
-      user: { userName: "", fullName: "", password: "" },
+    (set) => ({
+      user: null,
 
       login: (credentials) => {
-        set((state) => ({
-          user: {
-            ...state.user,
-            userName: credentials.userName,
-            fullName: credentials.fullName,
-            password: credentials.password,
-          },
-        }));
-      },
+        const isValid =
+          credentials.userName.trim() !== "" &&
+          credentials.password.trim() !== "" &&
+          credentials.userName === loginUserName &&
+          credentials.password === loginPassword;
 
-      logout: () => {
+        if (!isValid) return false;
+
         set({
-          user: { userName: "", fullName: "", password: "" },
+          user: {
+            userName: credentials.userName,
+            fullName: loginFullName,
+          },
         });
+        return true;
       },
 
-      isAuthenticated: () => {
-        return (
-          get().user.userName === loginUserName &&
-          get().user.password === loginPassword
-        );
-      },
+      logout: () => set({ user: null }),
     }),
-    { name: "user-storage" },
+    {
+      name: "user-storage",
+      partialize: (state) => ({ user: state.user }),
+    },
   ),
 );
