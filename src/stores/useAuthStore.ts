@@ -1,10 +1,13 @@
-import { loginPassword, loginUserName, loginFullName } from "@/data/loginData";
+import { loginPassword, loginUserName } from "@/data/loginData";
+import { fullName, email, avatar } from "@/data/userData";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type User = {
   userName: string;
   fullName: string;
+  email: string;
+  avatar: string;
 };
 
 interface AuthStore {
@@ -33,7 +36,9 @@ export const useAuthStore = create<AuthStore>()(
         set({
           user: {
             userName: credentials.userName,
-            fullName: loginFullName,
+            fullName: fullName,
+            email: email,
+            avatar: avatar,
           },
         });
         return true;

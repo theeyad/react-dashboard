@@ -14,6 +14,7 @@ import TeamMemberPage from "./pages/TeamMemberPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import AccountPage from "./pages/AccountPage";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
               <Route path="/dashboard/team" element={<TeamPage />} />
               <Route path="/dashboard/team/:id" element={<TeamMemberPage />} />
               <Route path="/dashboard/analytics" element={<AnalyticsPage />} />
+              <Route path="/dashboard/account" element={<AccountPage />} />
               <Route path="/dashboard/settings" element={<SettingsPage />} />
             </Route>
           </Route>
