@@ -7,116 +7,71 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import { useDashboardTasks } from "@/hooks/useDashboardTasks";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function OverviewDataTable() {
-    const payments = [
-  {
-    id: "P001",
-    name: "Sarah Smith",
-    email: "[EMAIL_ADDRESS]",
-    amount: 250.00,
-    status: "completed",
-  },
-  {
-    id: "P002",
-    name: "Michael Johnson",
-    email: "[EMAIL_ADDRESS]",
-    amount: 120.00,
-    status: "pending",
-  },
-  {
-    id: "P003",
-    name: "Emily Davis",
-    email: "[EMAIL_ADDRESS]",
-    amount: 400.00,
-    status: "completed",
-  },
-  {
-    id: "P004",
-    name: "David Wilson",
-    email: "[EMAIL_ADDRESS]",
-    amount: 80.00,
-    status: "completed",
-  },
-  {
-    id: "P004",
-    name: "David Wilson",
-    email: "[EMAIL_ADDRESS]",
-    amount: 80.00,
-    status: "completed",
-  },
-  {
-    id: "P004",
-    name: "David Wilson",
-    email: "[EMAIL_ADDRESS]",
-    amount: 80.00,
-    status: "completed",
-  },
-  {
-    id: "P004",
-    name: "David Wilson",
-    email: "[EMAIL_ADDRESS]",
-    amount: 80.00,
-    status: "completed",
-  },
-  {
-    id: "P004",
-    name: "David Wilson",
-    email: "[EMAIL_ADDRESS]",
-    amount: 80.00,
-    status: "completed",
-  },
-  {
-    id: "P004",
-    name: "David Wilson",
-    email: "[EMAIL_ADDRESS]",
-    amount: 80.00,
-    status: "completed",
-  },
-  {
-    id: "P004",
-    name: "David Wilson",
-    email: "[EMAIL_ADDRESS]",
-    amount: 80.00,
-    status: "completed",
-  },
-  {
-    id: "P004",
-    name: "David Wilson",
-    email: "[EMAIL_ADDRESS]",
-    amount: 80.00,
-    status: "completed",
-  },
-];
+  const tasks = useDashboardTasks();
 
-    return <>
-        <div className="rounded-lg border w-full">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-center">Task ID</TableHead>
-            <TableHead className="text-center">Task Name</TableHead>
-            <TableHead className="text-center">Team Member Responsible</TableHead>
-            <TableHead className="text-center">Deadline</TableHead>
-            <TableHead className="text-center">Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {payments.map((payment) => (
-            <TableRow key={payment.id}>
-              <TableCell className="text-center font-medium">{payment.id}</TableCell>
-              <TableCell className="text-center">{payment.name}</TableCell>
-              <TableCell className="text-center">{payment.email}</TableCell>
-              <TableCell className="text-center font-medium">${payment.amount.toFixed(2)}</TableCell>
-              <TableCell className="text-center">
-                <Badge variant={payment.status === "completed" ? "default" : "secondary"}>
-                  {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
-                </Badge>
-              </TableCell>
+  return (
+    <>
+      <div className="rounded-lg border w-full">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Task ID</TableHead>
+              <TableHead className="text-center">Task Name</TableHead>
+              <TableHead className="text-center">Status</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-    </>;
+          </TableHeader>
+          <TableBody>
+            {tasks.isLoading ? (
+              <TableRow>
+                <TableCell colSpan={3} className="h-106">
+                  <div className="flex w-full items-center justify-center">
+                    <ThreeDots
+                      visible={true}
+                      height="30"
+                      width="30"
+                      color="#ffffff"
+                      radius="9"
+                      ariaLabel="three-dots-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : tasks.isError ? (
+              <TableRow>
+                <TableCell colSpan={3} className="h-106">
+                  <div className="flex w-full items-center justify-center text-red-500">
+                    Error: {tasks.error?.message || "Unknown error"}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              tasks.data?.map((task) => (
+                <TableRow key={task.id}>
+                  <TableCell className="text-center font-medium">
+                    {task.id}
+                  </TableCell>
+                  <TableCell className="text-center">{task.title}</TableCell>
+                  <TableCell className="text-center">
+                    <Badge
+                      variant={
+                        task.completed === true ? "default" : "secondary"
+                      }
+                    >
+                      {task.completed === true ? "Completed" : "Pending"}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </>
+  );
 }
