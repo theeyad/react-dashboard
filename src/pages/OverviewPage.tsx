@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/card";
 import GlobeCard from "@/components/Globe";
 import OverviewDataTable from "@/components/OverviewDataTable";
-import OverviewChart from "@/components/OverviewChart";
+import AnalyticsAreaChart from "@/components/charts/AnalyticsAreaChart";
 
-import { cardsData } from "@/data/overviewData";
+import { cardsData } from "@/data/analyticsAreaChartData";
 
 export default function OverviewPage() {
   const documentTitle = useDocumentTitle();
@@ -53,7 +53,7 @@ export default function OverviewPage() {
           ))}
         </div>
         <div className="mt-4">
-          <OverviewChart />
+          <AnalyticsAreaChart />
         </div>
         <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_3fr] gap-4">
           <GlobeCard />

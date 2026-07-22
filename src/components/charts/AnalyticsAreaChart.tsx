@@ -25,10 +25,10 @@ import {
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-import {chartConfig} from "@/consts/overviewChartConfigConst"
-import {chartData} from "@/data/overviewData"
+import { chartConfig } from "@/consts/analyticsAreaChartConfigConst"
+import { chartData } from "@/data/analyticsAreaChartData";
 
-export default function OverviewChart() {
+export default function AnalyticsAreaChart() {
   const isMobile = useIsMobile();
   const [timeRange, setTimeRange] = useState("90d");
 

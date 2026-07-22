@@ -20,7 +20,7 @@ export default function OverviewDataTable() {
           <TableHeader>
             <TableRow>
               <TableHead className="text-center">Task ID</TableHead>
-              <TableHead className="text-center">Task Name</TableHead>
+              <TableHead className="text-center">Task Name (in Latin)</TableHead>
               <TableHead className="text-center">Status</TableHead>
             </TableRow>
           </TableHeader>
