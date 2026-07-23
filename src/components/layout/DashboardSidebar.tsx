@@ -37,7 +37,7 @@ export default function DashboardSidebar() {
         <NavMain items={navMainData} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        {user && <NavUser user={user} />}
       </SidebarFooter>
     </Sidebar>
   );

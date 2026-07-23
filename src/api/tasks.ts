@@ -9,7 +9,7 @@ interface Task {
 }
 
 const numberOfDashboardTasks = 11;
-const numberOfAllTasks = 25;
+const numberOfAllTasks = 150;
 
 export async function getDashboardTasks() {
     try {
