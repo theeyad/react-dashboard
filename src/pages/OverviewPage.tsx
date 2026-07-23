@@ -33,7 +33,11 @@ export default function OverviewPage() {
                 </CardTitle>
                 <CardAction>
                   <Badge variant="outline">
-                    <TbTrendingUp />
+                    {card.trendingUp ? (
+                      <TbTrendingUp className="size-4" />
+                    ) : (
+                      <TbTrendingDown className="size-4" />
+                    )}
                     {card.percentage}
                   </Badge>
                 </CardAction>

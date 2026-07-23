@@ -1,10 +1,10 @@
 import {
   Pie,
   PieChart,
+  type PieSectorShapeProps,
   Sector,
-  type PieSectorDataItem,
-  Tooltip,
-  type TooltipIndex,
+  useActiveTooltipDataPoints,
+  useIsTooltipActive,
 } from "recharts";
 
 import {
@@ -16,126 +16,101 @@ import {
 } from "../ui/card";
 import { ChartContainer } from "../ui/chart";
 
-// #region Sample data
-const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
+import { todosPieChartData } from "@/data/todosPieChartData";
 
-// #endregion
-const renderActiveShape = ({
+import {
+  PIE_CHART_COLORS,
+  PIE_CHART_RADIAN,
+} from "@/consts/pieChartConsts";
+
+function renderCustomizedLabel({
   cx,
   cy,
   midAngle,
   innerRadius,
   outerRadius,
-  startAngle,
-  endAngle,
-  fill,
-  payload,
+  name,
   percent,
-  value,
-}: PieSectorDataItem) => {
-  const RADIAN = Math.PI / 180;
-  const sin = Math.sin(-RADIAN * (midAngle ?? 1));
-  const cos = Math.cos(-RADIAN * (midAngle ?? 1));
-  const sx = (cx ?? 0) + ((outerRadius ?? 0) + 10) * cos;
-  const sy = (cy ?? 0) + ((outerRadius ?? 0) + 10) * sin;
-  const mx = (cx ?? 0) + ((outerRadius ?? 0) + 30) * cos;
-  const my = (cy ?? 0) + ((outerRadius ?? 0) + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-  const ey = my;
-  const textAnchor = cos >= 0 ? "start" : "end";
+}: any) {
+  if (cx == null || cy == null || innerRadius == null || outerRadius == null) {
+    return null;
+  }
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const ncx = Number(cx);
+  const x = ncx + radius * Math.cos(-(midAngle ?? 0) * PIE_CHART_RADIAN);
+  const ncy = Number(cy);
+  const y = ncy + radius * Math.sin(-(midAngle ?? 0) * PIE_CHART_RADIAN);
 
   return (
-    <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-        {payload.name}
-      </text>
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-      />
-      <Sector
-        cx={cx}
-        cy={cy}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        innerRadius={(outerRadius ?? 0) + 6}
-        outerRadius={(outerRadius ?? 0) + 10}
-        fill={fill}
-      />
-      <path
-        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={fill}
-        fill="none"
-      />
-      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        textAnchor={textAnchor}
-        fill="#333"
-      >{`PV ${value}`}</text>
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        dy={18}
-        textAnchor={textAnchor}
-        fill="#999"
-      >
-        {`(Rate ${((percent ?? 1) * 100).toFixed(2)}%)`}
-      </text>
-    </g>
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > ncx ? "start" : "end"}
+      dominantBaseline="central"
+      className="text-[10px]"
+    >
+      <tspan x={x} dy="-0.5em">
+        {name}
+      </tspan>
+      <tspan x={x} dy="1.2em">
+        {percent && `${(percent * 100).toFixed(0)}%`}
+      </tspan>
+    </text>
+  );
+};
+
+const MyCustomPie = (props: PieSectorShapeProps) => {
+  const p = useActiveTooltipDataPoints();
+  const isAnyPieActive = useIsTooltipActive();
+  const isThisPieActive = isAnyPieActive && props.payload === p?.[0];
+  let fillOpacity: number;
+  if (isAnyPieActive && !isThisPieActive) {
+    fillOpacity = 0.5;
+  } else {
+    fillOpacity = 1;
+  }
+  return (
+    <Sector
+      {...props}
+      fill={PIE_CHART_COLORS[props.index % PIE_CHART_COLORS.length]}
+      fillOpacity={fillOpacity}
+      style={{ transition: "fill-opacity 0.3s ease" }}
+    />
   );
 };
 
 export default function TodosPieChart({
   isAnimationActive = true,
-  defaultIndex = undefined,
 }: {
   isAnimationActive?: boolean;
-  defaultIndex?: TooltipIndex;
 }) {
   return (
     <Card className="@container/card">
-       <CardHeader>
-         <CardTitle>Tasks</CardTitle>
-         <CardDescription>Tasks Status Over Last Week</CardDescription>
-       </CardHeader>
-       <CardContent>
-         <ChartContainer config={{}} className="w-full h-106">
+      <CardHeader>
+        <CardTitle>Todos</CardTitle>
+        <CardDescription>Tasks To Make This Month</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={{}} className="w-full h-106">
           <PieChart
             responsive
-            margin={{
-              top: 5,
-              right: 0,
-              bottom: 0,
-              left: 5,
+            style={{
+              aspectRatio: 1,
             }}
           >
             <Pie
-              activeShape={renderActiveShape}
-              data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius="55%"
-              outerRadius="75%"
+              data={todosPieChartData}
+              labelLine={false}
+              label={renderCustomizedLabel}
               fill="#8884d8"
               dataKey="value"
               isAnimationActive={isAnimationActive}
+              shape={MyCustomPie}
             />
-            <Tooltip content={() => null} defaultIndex={defaultIndex} />
           </PieChart>
         </ChartContainer>
-       </CardContent>
+      </CardContent>
     </Card>
   );
 }
