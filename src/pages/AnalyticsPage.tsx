@@ -1,5 +1,6 @@
 import ActivityLineChart from "@/components/charts/ActivityLineChart";
 import AnalyticsAreaChart from "@/components/charts/AnalyticsAreaChart";
+import ReachRadarChart from "@/components/charts/ReachRadarChart";
 import TasksBarChart from "@/components/charts/TasksBarChart";
 import TodosPieChart from "@/components/charts/TodosPieChart";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
@@ -15,6 +16,7 @@ export default function AnalyticsPage() {
           <ActivityLineChart />
           <TasksBarChart />
           <TodosPieChart />
+          <ReachRadarChart />
         </div>
       </div>
     </>
