@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { queryClient } from "@/lib/queryClient";
 import {
   Search,
   CheckCircle2,
@@ -7,15 +6,13 @@ import {
   FileSpreadsheet,
   FileJson,
   X,
-  SlidersHorizontal,
 } from "lucide-react";
 import DataTable, { createTheme } from "react-data-table-component";
 import type { TableColumn } from "react-data-table-component";
 
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useTasks } from "@/hooks/useTasks";
+import { useTasks, useToggleTaskStatus } from "@/hooks/tasksHooks";
 import { useTaskFilterStore } from "@/stores/useTaskFilterStore";
-import { queryKeys } from "@/lib/queryKeys";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,6 +25,11 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { ThreeDots } from "react-loader-spinner";
+
+import { tasksTableCustomStyles, type Task } from "@/consts/tasks";
+
+import { useUIStore } from "@/stores/useUIStore";
+import TasksModal from "@/components/TasksModal";
 
 // Define a unified custom theme that leverages tailwindcss theme variables
 createTheme("custom-dashboard", {
@@ -52,88 +54,30 @@ createTheme("custom-dashboard", {
     hover: "var(--color-accent, #eee)",
     disabled: "var(--color-muted-foreground, #666)",
   },
+  highlightOnHover: {
+    default: "var(--table-row-hover, #fafafa)",
+    text: "var(--color-foreground, #000)",
+  },
+  striped: {
+    default: "var(--color-muted, #f9f9f9)",
+    text: "var(--color-foreground, #000)",
+  },
+  // Structural settings
+  spacing: { rowHeight: "56px", headerHeight: "56px", cellPaddingX: "16px" },
+  typography: { fontSize: "14px", fontSizeHeader: "12px" },
+  shape: { borderRadius: "8px" },
 });
-
-interface Task {
-  id: number;
-  title: string;
-  completed: boolean;
-}
-
-const customStyles: any = {
-  header: {
-    style: {
-      minHeight: "56px",
-      display: "none", // Hide the default built-in title header as we have our own CardHeader
-    },
-  },
-  headRow: {
-    style: {
-      borderTopStyle: "solid",
-      borderTopWidth: "1px",
-      borderTopColor: "var(--color-border, rgba(0,0,0,0.1))",
-      backgroundColor: "var(--color-muted, #f9f9f9)",
-      fontWeight: "600",
-      fontSize: "0.875rem",
-      color: "var(--color-foreground, #000)",
-    },
-  },
-  headCells: {
-    style: {
-      "&:not(:last-of-type)": {
-        borderRightStyle: "solid",
-        borderRightWidth: "1px",
-        borderRightColor: "var(--color-border, rgba(0,0,0,0.1))",
-      },
-    },
-  },
-  cells: {
-    style: {
-      fontSize: "0.875rem",
-      color: "var(--color-foreground, #000)",
-      "&:not(:last-of-type)": {
-        borderRightStyle: "solid",
-        borderRightWidth: "1px",
-        borderRightColor: "var(--color-border, rgba(0,0,0,0.1))",
-      },
-    },
-  },
-  rows: {
-    style: {
-      minHeight: "56px",
-      backgroundColor: "transparent",
-      "&:hover": {
-        backgroundColor: "transparent",
-      },
-      transition: "background-color 1s ease",
-    },
-  },
-  pagination: {
-    style: {
-      borderTopStyle: "solid",
-      borderTopWidth: "1px",
-      borderTopColor: "var(--color-border, rgba(0,0,0,0.1))",
-      color: "var(--color-foreground, #000)",
-      backgroundColor: "transparent",
-    },
-  },
-};
 
 export default function TasksPage() {
   const documentTitle = useDocumentTitle();
   const tasksQuery = useTasks();
+  const toggleTaskStatus = useToggleTaskStatus();
 
   const { search, status, setSearch, setStatus, reset } = useTaskFilterStore();
 
-  // Optimistic Toggle for task completed status
-  const toggleTaskStatus = (taskId: number) => {
-    queryClient.setQueryData<Task[]>(queryKeys.tasks, (oldTasks) => {
-      if (!oldTasks) return oldTasks;
-      return oldTasks.map((t) =>
-        t.id === taskId ? { ...t, completed: !t.completed } : t,
-      );
-    });
-  };
+  const openModal = useUIStore((s) => s.openModal);
+  const activeModal = useUIStore((s) => s.activeModal);
+  const closeModal = useUIStore((s) => s.closeModal);
 
   // Filtered task data
   const filteredData = useMemo(() => {
@@ -235,7 +179,10 @@ export default function TasksPage() {
             variant="ghost"
             size="sm"
             className="flex items-center gap-1.5 hover:bg-muted"
-            onClick={() => toggleTaskStatus(row.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleTaskStatus(row.id);
+            }}
             title={row.completed ? "Mark as Pending" : "Mark as Completed"}
           >
             {row.completed ? (
@@ -265,8 +212,7 @@ export default function TasksPage() {
         <Card className="w-full shadow-md overflow-hidden bg-card/50 backdrop-blur-md border">
           <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b">
             <div>
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <SlidersHorizontal className="size-5 text-muted-foreground" />
+              <CardTitle className="text-lg font-semibold">
                 Advanced Tasks Directory
               </CardTitle>
               <CardDescription>
@@ -384,12 +330,15 @@ export default function TasksPage() {
                 columns={columns}
                 data={filteredData}
                 theme="custom-dashboard"
-                customStyles={customStyles}
+                customStyles={tasksTableCustomStyles}
                 animateRows
                 pagination
-                paginationPerPage={20}
+                paginationPerPage={10}
                 paginationRowsPerPageOptions={[5, 10, 20, 50]}
                 responsive
+                pointerOnHover
+                highlightOnHover
+                onRowClicked={(row) => openModal(row.id)}
                 noDataComponent={
                   <div className="flex flex-col w-full items-center justify-center py-16 text-muted-foreground">
                     <span className="font-semibold">
@@ -405,6 +354,20 @@ export default function TasksPage() {
           </CardContent>
         </Card>
       </div>
+
+      {activeModal !== null && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4"
+          onClick={closeModal}
+        >
+          <div 
+            className="bg-card text-foreground border rounded-lg shadow-xl max-w-lg w-full p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <TasksModal />
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -8,9 +8,7 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import LoginPage from "./pages/LoginPage";
 import OverviewPage from "./pages/OverviewPage";
 import TasksPage from "./pages/TasksPage";
-import TaskDetailPage from "./pages/TaskDetailPage";
 import TeamPage from "./pages/TeamPage";
-import TeamMemberPage from "./pages/TeamMemberPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -30,9 +28,7 @@ function App() {
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<OverviewPage />} />
               <Route path="/dashboard/tasks" element={<TasksPage />} />
-              <Route path="/dashboard/tasks/:id" element={<TaskDetailPage />} />
               <Route path="/dashboard/team" element={<TeamPage />} />
-              <Route path="/dashboard/team/:id" element={<TeamMemberPage />} />
               <Route path="/dashboard/analytics" element={<AnalyticsPage />} />
               <Route path="/dashboard/account" element={<AccountPage />} />
               <Route path="/dashboard/settings" element={<SettingsPage />} />
