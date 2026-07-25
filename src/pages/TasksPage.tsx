@@ -207,7 +207,7 @@ export default function TasksPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold px-4 pt-4">{documentTitle}</h1>
+      <h1 className="text-2xl font-bold">{documentTitle}</h1>
       <div className="px-4 py-6 lg:px-6">
         <Card className="w-full shadow-md overflow-hidden bg-card/50 backdrop-blur-md border">
           <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b">
