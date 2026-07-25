@@ -5,15 +5,16 @@ import { Navigate } from "react-router";
 import PageLoader from "./components/PageLoader";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./components/layout/DashboardLayout";
-import LoginPage from "./pages/LoginPage";
-import OverviewPage from "./pages/OverviewPage";
-import TasksPage from "./pages/TasksPage";
-import TeamPage from "./pages/TeamPage";
-import AnalyticsPage from "./pages/AnalyticsPage";
-import SettingsPage from "./pages/SettingsPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import AccountPage from "./pages/AccountPage";
-
+import {
+  LoginPage,
+  OverviewPage,
+  TasksPage,
+  TeamPage,
+  AnalyticsPage,
+  SettingsPage,
+  AccountPage,
+  NotFoundPage,
+} from "./pages";
 
 function App() {
   return (
