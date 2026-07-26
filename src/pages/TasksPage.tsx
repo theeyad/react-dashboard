@@ -28,7 +28,7 @@ import { ThreeDots } from "react-loader-spinner";
 
 import { tasksTableCustomStyles, type Task } from "@/consts/tasks";
 
-import { useUIStore } from "@/stores/useUIStore";
+import { useModalStore } from "@/stores/useModalStore";
 import TasksModal from "@/components/TasksModal";
 
 // Define a unified custom theme that leverages tailwindcss theme variables
@@ -75,9 +75,9 @@ export default function TasksPage() {
 
   const { search, status, setSearch, setStatus, reset } = useTaskFilterStore();
 
-  const openModal = useUIStore((s) => s.openModal);
-  const activeModal = useUIStore((s) => s.activeModal);
-  const closeModal = useUIStore((s) => s.closeModal);
+  const openModal = useModalStore((s) => s.openModal);
+  const activeModal = useModalStore((s) => s.activeModal);
+  const closeModal = useModalStore((s) => s.closeModal);
 
   // Filtered task data
   const filteredData = useMemo(() => {
@@ -356,11 +356,11 @@ export default function TasksPage() {
       </div>
 
       {activeModal !== null && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4"
           onClick={closeModal}
         >
-          <div 
+          <div
             className="bg-card text-foreground border rounded-lg shadow-xl max-w-lg w-full p-6 relative"
             onClick={(e) => e.stopPropagation()}
           >

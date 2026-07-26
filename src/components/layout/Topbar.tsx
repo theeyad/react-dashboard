@@ -9,8 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator"
-import { useNavigate } from "react-router"
+import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router";
 
 type TopBarProps = {
   className?: string;
@@ -18,7 +18,7 @@ type TopBarProps = {
 
 export default function TopBar({ className }: TopBarProps) {
   const { setTheme } = useTheme();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <header
@@ -30,16 +30,13 @@ export default function TopBar({ className }: TopBarProps) {
       <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-2">
           <SidebarTrigger />
+          
           <Separator
             orientation="vertical"
             className="mx-2 data-[orientation=vertical]:h-8"
           />
           <div className="min-w-0">
-            <img
-              src="/logo.svg"
-              alt="logo"
-              className="h-[2.2rem] w-[2.2rem]"
-            />
+            <img src="/logo.svg" alt="logo" className="h-[2.2rem] w-[2.2rem]" />
           </div>
         </div>
 

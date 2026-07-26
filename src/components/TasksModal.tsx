@@ -1,13 +1,13 @@
 import { X } from "lucide-react";
-import { useUIStore } from "@/stores/useUIStore";
+import { useModalStore } from "@/stores/useModalStore";
 import { teamMembers } from "@/data/teamMembers";
 import { useTasks } from "@/hooks/tasksHooks";
 import { useState } from "react";
 import { useUpdateTaskData } from "@/hooks/tasksHooks";
 
 export default function TasksModal() {
-  const closeModal = useUIStore((s) => s.closeModal);
-  const activeTaskId = useUIStore((s) => s.activeModal);
+  const closeModal = useModalStore((s) => s.closeModal);
+  const activeTaskId = useModalStore((s) => s.activeModal);
 
   const tasks = useTasks().data;
   const task = tasks?.find((t) => t.id === activeTaskId);
@@ -16,7 +16,9 @@ export default function TasksModal() {
     task?.completed ? "completed" : "pending",
   );
   const [taskTitle, setTaskTitle] = useState(task?.title || "");
-  const [taskResponsibility, setTaskResponsibility] = useState(task?.responsible || "none");
+  const [taskResponsibility, setTaskResponsibility] = useState(
+    task?.responsible || "none",
+  );
 
   const updateTaskData = useUpdateTaskData();
 

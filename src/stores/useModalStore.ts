@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
-export interface UIStore {
+export interface modalStore {
   activeModal: number | null;
   openModal: (modalId: number) => void;
   closeModal: () => void;
 }
 
-export const useUIStore = create<UIStore>((set) => ({
+export const useModalStore = create<modalStore>((set) => ({
   activeModal: null,
   openModal: (modalId: number) => set({ activeModal: modalId }),
   closeModal: () => set({ activeModal: null }),
