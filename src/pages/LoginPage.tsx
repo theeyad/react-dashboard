@@ -12,11 +12,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 
 type AuthError = { title: string; desc: string } | null;
 
 export default function LoginPage() {
+  // navigates back to where the user was before login
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
+
   // login function from store
   const login = useAuthStore((s) => s.login);
 
@@ -42,7 +46,7 @@ export default function LoginPage() {
     e.preventDefault();
     const success = login({ userName, password });
     if (success) {
-      navigate("/dashboard", { replace: true });
+      navigate(from, { replace: true });
     } else {
       setAuthError({
         title: "Login Failed",
