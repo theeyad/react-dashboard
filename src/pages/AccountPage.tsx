@@ -23,7 +23,7 @@ import { activities, sessions } from "@/data/accountData";
 
 export default function AccountPage() {
   const documentTitle = useDocumentTitle();
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore((state) => state.user)!;
   const [showPassword, setShowPassword] = useState(false);
 
   return (
