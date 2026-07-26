@@ -77,7 +77,6 @@ export default function TasksPage() {
 
   const openModal = useModalStore((s) => s.openModal);
   const activeModal = useModalStore((s) => s.activeModal);
-  const closeModal = useModalStore((s) => s.closeModal);
 
   // Filtered task data
   const filteredData = useMemo(() => {
@@ -355,19 +354,7 @@ export default function TasksPage() {
         </Card>
       </div>
 
-      {activeModal !== null && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-card text-foreground border rounded-lg shadow-xl max-w-lg w-full p-6 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <TasksModal />
-          </div>
-        </div>
-      )}
+      {activeModal !== null && <TasksModal />}
     </>
   );
 }

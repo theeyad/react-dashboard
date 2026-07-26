@@ -15,31 +15,37 @@ import {
   AccountPage,
   NotFoundPage,
 } from "./pages";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 function App() {
   return (
     <>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          {/* Public */}
-          <Route path="/login" element={<LoginPage />} />
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Public */}
+            <Route path="/login" element={<LoginPage />} />
 
-          {/* Protected — wrapped in auth guard */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<DashboardLayout />}>
-              <Route path="/dashboard" element={<OverviewPage />} />
-              <Route path="/dashboard/tasks" element={<TasksPage />} />
-              <Route path="/dashboard/team" element={<TeamPage />} />
-              <Route path="/dashboard/analytics" element={<AnalyticsPage />} />
-              <Route path="/dashboard/account" element={<AccountPage />} />
-              <Route path="/dashboard/settings" element={<SettingsPage />} />
+            {/* Protected — wrapped in auth guard */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<DashboardLayout />}>
+                <Route path="/dashboard" element={<OverviewPage />} />
+                <Route path="/dashboard/tasks" element={<TasksPage />} />
+                <Route path="/dashboard/team" element={<TeamPage />} />
+                <Route
+                  path="/dashboard/analytics"
+                  element={<AnalyticsPage />}
+                />
+                <Route path="/dashboard/account" element={<AccountPage />} />
+                <Route path="/dashboard/settings" element={<SettingsPage />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 }
